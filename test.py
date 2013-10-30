@@ -1,4 +1,4 @@
-import MySQLdb
+import MySQLdb as mdb
 
 x = "hw"
 
