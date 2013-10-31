@@ -2,50 +2,35 @@
 
 import MySQLdb
 
-class Tikpy(object):
-	def __init__(self):
-		pass
-	
-	def dbconnect(self):
-		c = MySQLdb.connect("localhost","root","root","Tikpy")
-		return c
+def dbconnect(host, user, password, database):
+	con = MySQLdb.connect(host, user, password, database)
+	return con
 
-	def read(self):
-		c = dbconnect()
-		d = c.cursor
-		
-		if c:
-			c.close()
+class Tikpy(object):
+	def __init__(self, status, description, solution, uid="uid"):
+		self.status = status
+		self.description = description
+		self.solution = solution
+		self.uid = uid
 
 	def write(self):
-		pass
+		status = "OPN"
+		description = raw_input("Describe the issue: ")
 
-	def modify(self):
-		pass
+		con = dbconnect('localhost', 'root', 'root', 'tikpy')
+		with con:
+			cur = con.cursor()
+			cur.execute("INSERT INTO Ticket VALUES(NULL, NULL, 1, '%s', '%s', NULL) " 
+			% (status, description))
 
-	def search(self):
-		pass
-
-if __name__ == '__main__':
-	ticket = Tikpy()
-	while True:
-		print "Make a selection:"
-		print "1. Create Ticket(s)"
-		print "2. Modify Ticket(s)"
-		print "3. Search Tickets"
-		print "4. View Tickets"
-		print "0. Exit"
-		selection = raw_input("Make a Selection: ")
+		if con:
+			con.close()
 		
-		if selection == '1':
-			ticket.write()
-		elif selection == '2':
-			ticket.modify()
-		elif selection == '3':
-			ticket.search()
-		elif selection == '4':
-			pass
-		elif selection == '0':
-			break
-		else:
-			print "Invalid selection!"
+
+	def update(self, status, solution):
+		pass
+	def select(self):
+		pass
+
+test = Tikpy("OPN", "Test", "Test")
+test.write()
