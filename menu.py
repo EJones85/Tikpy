@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+import Tikpy
+
+Tik = Tikpy.Tikpy()
 
 MENU = {"Tickets":["Open Ticket", "Close Ticket", "Modify Ticket"], "Search":["Open Tickets", "Closed Tickets", "Ticket Numbers"]}
 EXQT = ["exit", "quit", "close", "Exit", "Quit", "Close"]
@@ -33,11 +36,27 @@ def menu_opt(men_return):
 	if men_return == "1":
 		print("Tickets Menu:")
 		print("1.{0}   2.{1}   3.{2}".format(*MENU["Tickets"]))
-		selection()
+		var = selection()
+		if var == "1":
+			Tik.write()
+		elif var == "2":
+			Tik.update('close')
+		elif var == "3":
+			Tik.update('modify')
+		else:
+			print "Error 43"
 	elif men_return == "2":
 		print("Search Menu:")
 		print("1.{0}   2.{1}   3.{2}".format(*MENU["Search"]))
-		selection()
+		var = selection()
+		if var == "1":
+			Tik.select("open")
+		elif var == "2":
+			Tik.select("closed")
+		elif var == "3":
+			Tik.select("ticket")
+		else:
+			print "Error 44"
 	else:
 		print("Error 42")
 
