@@ -27,8 +27,8 @@ class Tikpy(object):
 	def update(self, modtype):
 		con = dbconnect('localhost', 'root', 'root', 'tikpy')
 		if modtype == 'close':
-			solution = raw_input("How did you solve the issue?: ")
 			ID = raw_input("What is the ticket number: ")
+			solution = raw_input("How did you solve the issue?: ")
 			with con:
 				cur = con.cursor()
 				cur.execute("UPDATE Ticket SET Status='CLD', Solution='%s' WHERE ID='%s'" 
@@ -38,8 +38,8 @@ class Tikpy(object):
 				con.close()
 
 		elif modtype == 'modify':
-			description = raw_input("What would you like to add?: ")
 			ID = raw_input("What is the ticket number: ")
+			description = raw_input("What would you like to add?: ")
 			with con:
 				cur = con.cursor()
 				cur.execute("SELECT Description FROM Ticket WHERE ID ='%s'" 
@@ -75,5 +75,27 @@ class Tikpy(object):
 			if con:
 				con.close()
 
+		if search_type == 'ticket':
+			search_value = raw_input("What is the ticket number: ")
+			with con:
+				cur = con.cursor(MySQLdb.cursors.DictCursor)
+				cur.execute("SELECT * FROM Ticket WHERE ID = %s" % search_value)
+				result = cur.fetchall()
+				for x in result:
+					print x
+			if con:
+				con.close()
+
+		if search_type == 'date':
+			search_value = raw_input("Put in the date you are searching for")
+			with con:
+				cur = con.cursor(MySQLdb.cursors.DictCursor)
+				cur.execute("SELECT * FROM Ticket WHERE Status = 'CLD'")
+				result = cur.fetchall()
+				for x in result:
+					print x
+			if con:
+				con.close()
+
 test = Tikpy()
-test.select('closed')
+test.select('ticket')
