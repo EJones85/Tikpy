@@ -17,11 +17,11 @@ class Tikpy(object):
 		"""
 		status = "OPN"
 		description = raw_input("Describe the issue: ")
-		con = dbconnect('localhost', 'root', 'root', 'tikpy')
+		con = dbconnect('localhost', 'root', 'sprobuj', 'tikpy')
 		with con:
 			cur = con.cursor()
-			cur.execute("INSERT INTO Ticket VALUES(NULL, NULL, 1, '{0}', '{1}', NULL) ".format(status, description))
-			cur.execute("SELECT * FROM Ticket ORDER BY ID DESC LIMIT 1")
+			cur.execute("INSERT INTO ticket VALUES(NULL, NULL, 1, '{0}', '{1}', NULL) ".format(status, description))
+			cur.execute("SELECT * FROM ticket ORDER BY ID DESC LIMIT 1")
 			result = cur.fetchone()
 			print(result)
 		if con:
@@ -33,13 +33,13 @@ class Tikpy(object):
 		modify the description of the ticket by adding additional information. It requires a
 		predefined STR from the menu function to tell how this function should proceed.
 		"""
-		con = dbconnect('localhost', 'root', 'root', 'tikpy')
+		con = dbconnect('localhost', 'root', 'sprobuj', 'tikpy')
 		if modtype == 'close':
 			ID = raw_input("What is the ticket number: ")
 			solution = raw_input("How did you solve the issue?: ")
 			with con:
 				cur = con.cursor()
-				cur.execute("UPDATE Ticket SET Status='CLD', Solution='{0}' WHERE ID='{1}'".format(solution, ID))
+				cur.execute("UPDATE ticket SET Status='CLD', Solution='{0}' WHERE ID='{1}'".format(solution, ID))
 			if con:
 				con.close()
 
@@ -48,9 +48,9 @@ class Tikpy(object):
 			description = raw_input("What would you like to add?: ")
 			with con:
 				cur = con.cursor()
-				cur.execute("SELECT Description FROM Ticket WHERE ID ='{0}'".format(ID))
+				cur.execute("SELECT Description FROM ticket WHERE ID ='{0}'".format(ID))
 				old_desc = cur.fetchone()
-				cur.execute("UPDATE Ticket SET Description='{0} Addition():{1}' WHERE ID='{2}'".format(old_desc[0], description, ID))
+				cur.execute("UPDATE ticket SET Description='{0} Addition():{1}' WHERE ID='{2}'".format(old_desc[0], description, ID))
 			if con:
 				con.close()
 
@@ -60,24 +60,26 @@ class Tikpy(object):
 		by the menu function. This will search for open, closed, ticket number, and a date range 
 		of tickets.
 		"""
-		con = dbconnect('localhost', 'root', 'root', 'tikpy')
+		con = dbconnect('localhost', 'root', 'sprobuj', 'tikpy')
 		if search_type == 'open':
 			with con:
 				cur = con.cursor(MySQLdb.cursors.DictCursor)
-				cur.execute("SELECT ID, Description, Date, UID FROM Ticket WHERE Status = 'OPN'")
+				cur.execute("SELECT ID, Description, Date, UID FROM ticket WHERE Status = 'OPN'")
 				result = cur.fetchall()
+				print("ID    UID   Description")
 				for x in result:
-					print(x)
+					print("{0}     {1}     {2}".format(x["ID"], x["UID"], x["Description"][:35]))
 			if con:
 				con.close()
 
 		if search_type == 'closed':
 			with con:
 				cur = con.cursor(MySQLdb.cursors.DictCursor)
-				cur.execute("SELECT * FROM Ticket WHERE Status = 'CLD'")
+				cur.execute("SELECT * FROM ticket WHERE Status = 'CLD'")
 				result = cur.fetchall()
+				print("ID    UID   Description")
 				for x in result:
-					print(x)
+					print("{0}     {1}     {2}".format(x["ID"], x["UID"], x["Description"][:35]))
 			if con:
 				con.close()
 
@@ -85,10 +87,11 @@ class Tikpy(object):
 			search_value = raw_input("What is the ticket number: ")
 			with con:
 				cur = con.cursor(MySQLdb.cursors.DictCursor)
-				cur.execute("SELECT * FROM Ticket WHERE ID = %s" % search_value)
+				cur.execute("SELECT * FROM ticket WHERE ID = %s" % search_value)
 				result = cur.fetchall()
+				print("ID    Status    UID   Description")
 				for x in result:
-					print(x)
+					print("{0}     {1}       {2}     {3}".format(x["ID"], x["Status"], x["UID"], x["Description"][:35]))
 			if con:
 				con.close()
 
@@ -96,12 +99,10 @@ class Tikpy(object):
 			search_value = raw_input("Put in the date you are searching for")
 			with con:
 				cur = con.cursor(MySQLdb.cursors.DictCursor)
-				cur.execute("SELECT * FROM Ticket WHERE Status = 'CLD'")
+				cur.execute("SELECT * FROM ticket WHERE Status = 'CLD'")
 				result = cur.fetchall()
 				for x in result:
 					print(x)
 			if con:
 				con.close()
 
-test = Tikpy()
-test.write()
