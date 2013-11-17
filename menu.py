@@ -1,14 +1,21 @@
 #!/usr/bin/python
 
 import Tikpy
-
-Tik = Tikpy.Tikpy()
+import getpass
 
 MENU = {"Tickets":["Open Ticket", "Close Ticket", "Modify Ticket"], "Search":["Open Tickets", "Closed Tickets", "Ticket Numbers"]}
 EXQT = ["exit", "quit", "close", "Exit", "Quit", "Close", "EXIT", "QUIT", "CLOSE", "e", "q", "c", "E", "Q", "C"]
 BACK = ["back", "b", "B", "Back", "previous", "p", "P", "Previous"]
 TIK_MEN = [x for x in MENU["Tickets"]]
 SCH_MEN = [x for x in MENU["Search"]]
+
+def database_connect():
+	server = raw_input("Server name / Address: ")
+	user = raw_input("Database Username: ")
+	password = getpass.getpass("Database Password: ")
+	db_name = raw_input("Database Name: ")
+	Tik = Tikpy.Tikpy(server, user, password, db_name)
+	return Tik
 
 def menu_main(MNU):
 	""" STDIN > STR
@@ -76,6 +83,7 @@ def menu_opt(men_return):
 		print("Error in Search menu function in menu_opt function.")
 
 if __name__ == "__main__":
+		Tik = database_connect()
 		while True:
 			print("")
 			print("Welcome to Tikpy, a simple python ticketing system; please select from the following menu:")
