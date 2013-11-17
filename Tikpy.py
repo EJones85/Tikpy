@@ -1,11 +1,17 @@
 #!/usr/bin/python
 
 import MySQLdb
+import sys
 
 def dbconnect(host, user, password, database):
-	con = MySQLdb.connect(host, user, password, database)
-	return con
-
+	try:
+		con = MySQLdb.connect(host, user, password, database)
+		return con
+	except MySQLdb.Error, E:
+		print("Error {0}: {1}".format(E.args[0], E.args[1]))
+		print("Entered wrong credentials for the database.")
+		sys.exit(1)
+		
 class Tikpy(object):
 	def __init__(self, host, user, password, database):
 		self.host = host
@@ -116,11 +122,8 @@ class Tikpy(object):
 				cur = con.cursor(MySQLdb.cursors.DictCursor)
 				cur.execute("SELECT * FROM ticket WHERE Description LIKE '%{0}%'".format(search_value))
 				result = cur.fetchall()
-				print(result)
+				print("ID    Status    UID   Description")
 				for x in result:
-					print(x)
+					print("{0}     {1}       {2}     {3}".format(x["ID"], x["Status"], x["UID"], x["Description"][:35]))
 			if con:
 				con.close()
-
-Tik = Tikpy('localhost', 'root', 'root', 'tikpy')
-Tik.select('word')
