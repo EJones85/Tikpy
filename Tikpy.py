@@ -7,8 +7,11 @@ def dbconnect(host, user, password, database):
 	return con
 
 class Tikpy(object):
-	def __init__(self):
-		pass
+	def __init__(self, host, user, password, database):
+		self.host = host
+		self.user = user
+		self.password = password
+		self.database = database
 
 	def write(self):
 		""" STDIN -> NONE
@@ -17,13 +20,14 @@ class Tikpy(object):
 		"""
 		status = "OPN"
 		description = raw_input("Describe the issue: ")
-		con = dbconnect('localhost', 'root', 'sprobuj', 'tikpy')
+		con = dbconnect(self.host, self.user, self.password, self.database)
 		with con:
 			cur = con.cursor()
 			cur.execute("INSERT INTO ticket VALUES(NULL, NULL, 1, '{0}', '{1}', NULL) ".format(status, description))
 			cur.execute("SELECT * FROM ticket ORDER BY ID DESC LIMIT 1")
 			result = cur.fetchone()
-			print(result)
+			print("ID     TIME                    UID   STATUS  DESCRIPTION") 
+			print("{0}     {1}     {2}     {3}     {4}").format(result[0], result[1], result[2], result[3], result[4])
 		if con:
 			con.close()	
 
@@ -33,7 +37,7 @@ class Tikpy(object):
 		modify the description of the ticket by adding additional information. It requires a
 		predefined STR from the menu function to tell how this function should proceed.
 		"""
-		con = dbconnect('localhost', 'root', 'sprobuj', 'tikpy')
+		con = dbconnect(self.host, self.user, self.password, self.database)
 		if modtype == 'close':
 			ID = raw_input("What is the ticket number: ")
 			solution = raw_input("How did you solve the issue?: ")
@@ -60,7 +64,7 @@ class Tikpy(object):
 		by the menu function. This will search for open, closed, ticket number, and a date range 
 		of tickets.
 		"""
-		con = dbconnect('localhost', 'root', 'sprobuj', 'tikpy')
+		con = dbconnect(self.host, self.user, self.password, self.database)
 		if search_type == 'open':
 			with con:
 				cur = con.cursor(MySQLdb.cursors.DictCursor)
@@ -105,4 +109,5 @@ class Tikpy(object):
 					print(x)
 			if con:
 				con.close()
-
+Tik = Tikpy('localhost', 'root', 'root', 'tikpy')
+Tik.select('open')
