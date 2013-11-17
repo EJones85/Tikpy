@@ -91,7 +91,7 @@ class Tikpy(object):
 			search_value = raw_input("What is the ticket number: ")
 			with con:
 				cur = con.cursor(MySQLdb.cursors.DictCursor)
-				cur.execute("SELECT * FROM ticket WHERE ID = %s" % search_value)
+				cur.execute("SELECT * FROM ticket WHERE ID = %s".format(search_value))
 				result = cur.fetchall()
 				print("ID    Status    UID   Description")
 				for x in result:
@@ -109,5 +109,18 @@ class Tikpy(object):
 					print(x)
 			if con:
 				con.close()
+
+		if search_type == 'word':
+			search_value = raw_input("What Word(s) are you looking for: ")
+			with con:
+				cur = con.cursor(MySQLdb.cursors.DictCursor)
+				cur.execute("SELECT * FROM ticket WHERE Description LIKE '%{0}%'".format(search_value))
+				result = cur.fetchall()
+				print(result)
+				for x in result:
+					print(x)
+			if con:
+				con.close()
+
 Tik = Tikpy('localhost', 'root', 'root', 'tikpy')
-Tik.select('open')
+Tik.select('word')
