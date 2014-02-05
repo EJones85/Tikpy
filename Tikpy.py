@@ -59,14 +59,17 @@ class Tikpy(object):
 
 		elif modtype == 'modify':
 			ID = raw_input("What is the ticket number: ")
-			description = raw_input("What would you like to add?: ")
-			with con:
-				cur = con.cursor()
-				cur.execute("SELECT Description FROM ticket WHERE ID ='{0}'".format(ID))
-				old_desc = cur.fetchone()
-				cur.execute("UPDATE ticket SET Description='{0} Addition():{1}' WHERE ID='{2}'".format(old_desc[0], description, ID))
-			if con:
-				con.close()
+			if ID.isdigit():
+				description = raw_input("What would you like to add?: ")
+				with con:
+					cur = con.cursor()
+					cur.execute("SELECT Description FROM ticket WHERE ID ='{0}'".format(ID))
+					old_desc = cur.fetchone()
+					cur.execute("UPDATE ticket SET Description='{0} Addition():{1}' WHERE ID='{2}'".format(old_desc[0], description, ID))
+				if con:
+					con.close()
+			else:
+				print("Error 7331: wrong input")
 
 	def select(self, search_type):
 		""" STDIN -> NONE
