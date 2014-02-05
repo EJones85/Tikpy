@@ -4,6 +4,10 @@ import MySQLdb
 import sys
 
 def dbconnect(host, user, password, database):
+	"""
+	Function to allow connection to database for tickets, this will also check the
+	DB credentials and give you an error when your credentials don't work.
+	"""
 	try:
 		con = MySQLdb.connect(host, user, password, database)
 		return con
